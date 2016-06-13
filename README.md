@@ -13,17 +13,18 @@ for example, to automate tests based on real production data.
 # Usage
 
 Syntax:
-```bash
-migrate -h                                                                                
-usage: migrate [-h] [--file FILE] [--database DATABASE]
+
+```
+usage: migrate [-h] [--file FILE] [database [database ...]]
 
 Tool to migrate databases between instances.
 
+positional arguments:
+ database              List of databases, otherwise all
+
 optional arguments:
-  -h, --help            show this help message and exit
-  --file FILE, -f FILE  JSON file path with the restores configuration
-  --database DATABASE, -d DATABASE
-                        Restores a specific database, otherwise all
+ -h, --help            show this help message and exit
+ --file FILE, -f FILE  JSON file path with the restores configuration
 ```
 
 Create a `migrator.json` to create restores definitions:
@@ -45,9 +46,13 @@ Create a `migrator.json` to create restores definitions:
 ]
 ```
 
-Run with the `migrate` command:
+Run all data migrations:
 
     migrate
+
+Run only data migration of one database:
+
+    migrate products
 
 # Install
 Meanwhile the tool is in development, install it from Github:
