@@ -4,10 +4,11 @@ A tool to automate migrations of data between database instances. It allows you
 for example, to automate tests based on real production data.
 
 # Requirements
-  - Python 3.X
+  - Python 3.5
 
 # Database support
- - Postgres in Docker Containers
+ - Postgres in Docker containers
+ - Rethinkdb in Docker containers
 
 # Usage
 
@@ -37,9 +38,9 @@ Create a `migrator.json` to create restores definitions:
   },
   {
     "database": "authentication",
-    "type": "postgres",
-    "source": {"server": "db1.company.com", "container": "authentication_postgres_1", "database": "auth"},
-    "destination": { "container": "test_authentication_postgres_1", "database": "auth"}
+    "type": "rethinkdb",
+    "source": {"server": "db2.company.com", "container": "authentication_rethinkdb_1", "database": "auth"},
+    "destination": { "container": "test_authentication_rethinkdb_1", "database": "auth"}
   }
 ]
 ```

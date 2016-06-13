@@ -21,19 +21,19 @@ def parse_config(file_path):
     return config
 
 
-def filter_databases(config, args):
+def filter_config(config, args):
     if args.database:
-        databases = [c for c in config if c["database"] == args.database]
+        filtered_config = [c for c in config if c["database"] == args.database]
     else:
-        databases = config
-    return databases
+        filtered_config = config
+    return filtered_config
 
 
 def main():
     args = parse()
     config = parse_config(args.file)
-    databases = filter_databases(config, args)
-    [migrate(d) for d in databases]
+    config = filter_config(config, args)
+    [migrate(c) for c in config]
 
 if __name__ == '__main__':
     main()
