@@ -17,11 +17,10 @@ class Server:
 
 
 class Container:
-    """ Returns commands for a running container """
+    """ Generates commands for a running container """
     def __init__(self, name):
         self.name = name
 
     def execute(self, cmd, options=""):
         cmd = "docker exec {options} {container} {cmd}".format(options=options, container=self.name, cmd=cmd)
         return cmd
-    

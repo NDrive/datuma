@@ -1,9 +1,9 @@
-""" Postgres implementation """
+"""Postgres implementation."""
 
 
 def dump(**kwargs):
-    return "pg_dump --user {user} {database} | gzip > {archive}".format(**kwargs)
+    return "pg_dump --user {user} {database}".format(**kwargs)
 
 
 def restore(**kwargs):
-    return "gunzip -c {archive} | psql {database}"
+    return "psql {database}".format(**kwargs)
