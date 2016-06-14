@@ -1,33 +1,20 @@
-# Migrator _(in development)_
+# Datuma
 
 A tool to automate migrations of data between database instances. It allows you
 for example, to automate tests based on real production data.
 
-# Requirements
-  - Python 3.5
+## Database support
+At this development stage, only __Docker containers are supported__ with the following databases:
+- Postgres
+- RethinkDB (with python package rethinkdb)
 
-# Database support
- - Postgres in Docker containers
- - Rethinkdb in Docker containers
+## Assumptions
+- You can connect by ssh with the servers described in the configuration file
+- Sudo is passwordless (to run Docker commands)
 
 # Usage
 
-Syntax:
-
-```
-usage: migrate [-h] [--file FILE] [database [database ...]]
-
-Tool to migrate databases between instances.
-
-positional arguments:
- database              List of databases, otherwise all
-
-optional arguments:
- -h, --help            show this help message and exit
- --file FILE, -f FILE  JSON file path with the restores configuration
-```
-
-Create a `migrator.json` to create restores definitions:
+Create a `datuma.json` to create restores definitions:
 
 ```json
 [
@@ -48,13 +35,26 @@ Create a `migrator.json` to create restores definitions:
 
 Run all data migrations:
 
-    migrate
+    datuma
 
 Run only data migration of one database:
 
-    migrate products
+    datuma products
 
 # Install
-Meanwhile the tool is in development, install it from Github:
+Install __Python 3.5__ or later and then:
 
-    pip install git+https://github.com/NDrive/migrator
+    pip install datuma --pre
+
+# Development
+Use virtualenv with Python 3.5 or later.
+
+## Setup
+Working in development mode:
+
+    python setup.py develop
+
+## Publish
+
+    python setup.py register
+    python setup.py upload

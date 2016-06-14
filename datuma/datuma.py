@@ -3,13 +3,13 @@ import inspect
 import importlib.util
 
 from .cmd import Server, Container, shell
-import migrator.database
+import datuma.database
 
-MIGRATOR_DIR="~/.migrator"
+DATUMA_DIR="~/.datuma"
 
 def generate_archive_path(config):
     uid = "database-%s-%s" % (config["database"], int(time.time()))
-    path = MIGRATOR_DIR + "/"+ uid + ".tar.gz"
+    path = DATUMA_DIR + "/"+ uid + ".tar.gz"
     return path
 
 
@@ -17,7 +17,7 @@ def dump(config, database, archive, server):
     if "container" in config["source"]:
         container = Container(config["source"]["container"])
 
-    server.ssh("mkdir -p " + MIGRATOR_DIR)
+    server.ssh("mkdir -p " + DATUMA_DIR)
 
     cmd = database.dump(
         database=config["source"]["database"],
@@ -33,7 +33,7 @@ def dump(config, database, archive, server):
 
 
 def transfer(config, archive, server):
-    shell("mkdir -p " + MIGRATOR_DIR)
+    shell("mkdir -p " + DATUMA_DIR)
     cmd = "rsync {host}:{archive} {archive}".format(
         host=config["source"]["server"],
         archive=archive)
@@ -64,7 +64,7 @@ def validate_schema(config):
         raise Exception("Missing keys: %s" % diff)
 
     # Database
-    if not importlib.util.find_spec("migrator.database." + config["type"]):
+    if not importlib.util.find_spec("datuma.database." + config["type"]):
         raise Exception("Invalid database type %s" % config["type"])
 
     # Source
@@ -90,7 +90,7 @@ def migrate(config):
 
     archive = generate_archive_path(config)
     server = Server(config["source"]["server"])
-    database = importlib.import_module("migrator.database." + config["type"])
+    database = importlib.import_module("datuma.database." + config["type"])
 
     dump(config, database, archive, server)
     transfer(config, archive, server)

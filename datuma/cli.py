@@ -4,12 +4,12 @@ import argparse
 import json
 import sys
 
-from migrator.migrator import migrate
+from .datuma import migrate
 
 
 def parse():
-    parser = argparse.ArgumentParser(description='Tool to migrate databases between instances.')
-    parser.add_argument('--file', '-f', help='JSON file path with the restores configuration', default="migrator.json")
+    parser = argparse.ArgumentParser(description='A Tool to migrate databases between instances.')
+    parser.add_argument('--file', '-f', help='JSON file path with the restores configuration', default="datuma.json")
     parser.add_argument('databases', help='List of databases, otherwise all', type=str, nargs='*', metavar='database')
     args = parser.parse_args()
     return args
