@@ -57,4 +57,4 @@ Working in development mode:
 ## Publish
 
     python setup.py register
-    python setup.py upload
+    python setup.py sdist upload
