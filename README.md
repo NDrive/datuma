@@ -1,5 +1,7 @@
 # Datuma
 
+[![PyPI version](https://badge.fury.io/py/datuma.svg)](https://badge.fury.io/py/datuma)
+
 A tool to automate migrations of data between database instances. It allows you
 for example, to automate tests based on real production data.
 
@@ -44,7 +46,7 @@ Run only data migration of one database:
 # Install
 Install __Python 3.5__ or later and then:
 
-    pip install datuma --pre
+    pip install datuma
 
 # Development
 Use virtualenv with Python 3.5 or later.
