@@ -43,7 +43,7 @@ def transfer(config, archive, server):
 
 
 def restore(config, database, archive):
-    cmd = database.restore(database=config["database"])
+    cmd = database.restore(database=config["destination"]["database"])
     if "container" in config["destination"]:
         container = Container(config["destination"]["container"])
         extra_options = "--user=postgres" if config["type"] == "postgres" else ""
@@ -74,7 +74,7 @@ def validate_schema(config):
         raise Exception("Missing keys in source: %s" % diff)
 
     # Destination
-    expected_keys = {"container", "database"}
+    expected_keys = {"database"}
     diff = expected_keys - set(config["destination"].keys())
     if diff:
         raise Exception("Missing keys in destination: %s" % diff)
