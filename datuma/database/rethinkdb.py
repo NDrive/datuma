@@ -4,3 +4,6 @@ def dump(**kwargs):
 
 def restore(**kwargs):
     return "cat > temp.tar.gz; rethinkdb restore temp.tar.gz ; rm temp.tar.gz".format(**kwargs)
+
+def prefix():
+    return ""

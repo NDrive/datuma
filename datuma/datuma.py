@@ -26,6 +26,8 @@ def dump(config, database, archive, server):
 
     if "container" in config["source"]:
         cmd = "sudo " + container.execute(cmd)
+    else:
+        cmd = "sudo " + database.prefix() + " " + cmd
 
     cmd += " | gzip > " + archive
     print("[dump] %s" % cmd)
@@ -68,7 +70,7 @@ def validate_schema(config):
         raise Exception("Invalid database type %s" % config["type"])
 
     # Source
-    expected_keys = {"server", "container", "database"}
+    expected_keys = {"server", "database"}
     diff = expected_keys - set(config["source"].keys())
     if diff:
         raise Exception("Missing keys in source: %s" % diff)

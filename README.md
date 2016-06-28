@@ -6,17 +6,18 @@ A tool to automate migrations of data between database instances. It allows you
 for example, to automate tests based on real production data.
 
 ## Database support
-At this development stage, only __Docker containers are supported__ with the following databases:
+At this development stage, the following databases are supported:
 - Postgres
 - RethinkDB (with python package rethinkdb)
 
 ## Assumptions
 - You can connect by ssh with the servers described in the configuration file
-- Sudo is passwordless (to run Docker commands)
+- Sudo is passwordless
 
 # Usage
 
-Create a `datuma.json` to create restores definitions:
+Create a `datuma.json` to create restores definitions. The following example have
+restores with and without containers:
 
 ```json
 [
@@ -31,6 +32,12 @@ Create a `datuma.json` to create restores definitions:
     "type": "rethinkdb",
     "source": {"server": "db2.company.com", "container": "authentication_rethinkdb_1", "database": "auth"},
     "destination": { "container": "test_authentication_rethinkdb_1", "database": "auth"}
+  },
+  {
+    "database": "store",
+    "type": "postgres",
+    "source": {"server": "db2.company.com", "database": "auth"},
+    "destination": { "database": "auth"}
   }
 ]
 ```
