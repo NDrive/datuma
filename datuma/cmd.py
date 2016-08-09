@@ -1,9 +1,15 @@
 import subprocess
 
 
-def shell(cmd):
+def shell(cmd, ignore_errors=False):
     """ Executes commands through shell """
-    return subprocess.check_output(cmd, shell=True)
+    try:
+        return subprocess.check_output(cmd, shell=True)
+    except Exception as e:
+        if ignore_errors:
+            return ""
+        else:
+            raise e
 
 
 class Server:

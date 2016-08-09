@@ -3,6 +3,7 @@
 import argparse
 import json
 import sys
+import logging
 
 from .datuma import migrate
 
@@ -30,6 +31,19 @@ def parse_config(file_path):
     return config
 
 
+def configure_logs():
+    formater = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+
+    # Root Logger
+    logger = logging.getLogger('')
+    logger.setLevel(logging.DEBUG)
+
+    # Console Handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(formater)
+    logger.addHandler(console_handler)
+
+
 def filter_config(config, args):
     if args.databases:
         filtered_config = [c for c in config if c["database"] in args.databases]
@@ -41,6 +55,9 @@ def filter_config(config, args):
 def main():
     try:
         args = parse()
+        configure_logs()
+        logging.info("Using configuration file %s" % args.file)
+        logging.info("Databases to migrate data: %s" % " ".join(args.databases))
         config = parse_config(args.file)
         config = filter_config(config, args)
         [migrate(c) for c in config]

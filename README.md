@@ -25,13 +25,13 @@ restores with and without containers:
     "database": "products",
     "type": "postgres",
     "source": {"server": "db1.company.com", "container": "products_postgres_1", "database": "products"},
-    "destination": { "container": "test_products_postgres_1", "database": "products"}
+    "destination": { "container": "test_products_postgres_1", "database": "products", "drop": true}
   },
   {
     "database": "authentication",
     "type": "rethinkdb",
-    "source": {"server": "db2.company.com", "container": "authentication_rethinkdb_1", "database": "auth"},
-    "destination": { "container": "test_authentication_rethinkdb_1", "database": "auth"}
+    "source": {"server": "db2.company.com", "container": "authentication_rethinkdb_1", "database": "auth", "password": "ssd"},
+    "destination": { "container": "test_authentication_rethinkdb_1", "database": "auth", "options": "--force"}
   },
   {
     "database": "store",

@@ -1,6 +1,7 @@
 import time
 import inspect
 import importlib.util
+import logging
 
 from .cmd import Server, Container, shell
 import datuma.database
@@ -21,7 +22,7 @@ def dump(config, database, archive, server):
 
     cmd = database.dump(
         database=config["source"]["database"],
-        user="postgres"
+        password=config["source"].get("password", False)
     )
 
     if "container" in config["source"]:
@@ -30,7 +31,7 @@ def dump(config, database, archive, server):
         cmd = "sudo " + database.prefix() + " " + cmd
 
     cmd += " | gzip > " + archive
-    print("[dump] %s" % cmd)
+    logging.info("- Dump: %s" % cmd)
     server.ssh(cmd)
 
 
@@ -39,20 +40,28 @@ def transfer(config, archive, server):
     cmd = "rsync {host}:{archive} {archive}".format(
         host=config["source"]["server"],
         archive=archive)
-    print("[transfer] %s" % cmd)
+    logging.info("- Transfer: %s" % cmd)
     shell(cmd)
     server.ssh("rm -f " + archive)
 
 
 def restore(config, database, archive):
-    cmd = database.restore(database=config["destination"]["database"])
+    cmd = database.restore(**config["destination"])
+
+    # If drop=true, recreate an empty database
+    if config["destination"].get("drop", False) and not "container" in config["destination"]:
+        logging.info("- Dropping and creating empty database")
+        shell(database.dropdb(database=config["destination"]["database"]), ignore_errors=True)
+        shell(database.createdb(database=config["destination"]["database"]))
+
     if "container" in config["destination"]:
         container = Container(config["destination"]["container"])
         extra_options = "--user=postgres" if config["type"] == "postgres" else ""
         cmd = container.execute(cmd, options="-i %s" % extra_options)
 
     cmd = "gunzip -c " + archive + " | " + cmd
-    print("[restore] %s" % cmd)
+    logging.info("- Restore: %s" % cmd)
+
     shell(cmd)
     shell("rm -f " + archive)
 
@@ -85,14 +94,17 @@ def validate_schema(config):
 def migrate(config):
     try:
         validate_schema(config)
+        logging.debug("Schema is valid")
     except Exception as e:
         raise Exception("Error in %s database restore definition: %s " % (config, e))
-
-    print("======= [%s] =======" % config["database"])
 
     archive = generate_archive_path(config)
     server = Server(config["source"]["server"])
     database = importlib.import_module("datuma.database." + config["type"])
+
+    logging.info("Database %s of type %s" % (config["database"],  config["type"]))
+    logging.info("- Archive: %s" % archive)
+    logging.info("- Server: %s" % config["source"]["server"])
 
     dump(config, database, archive, server)
     transfer(config, archive, server)
