@@ -9,6 +9,7 @@ for example, to automate tests based on real production data.
 At this development stage, the following databases are supported:
 - Postgres
 - RethinkDB (with python package rethinkdb)
+- Redis
 
 ## Assumptions
 - You can connect by ssh with the servers described in the configuration file
@@ -38,6 +39,12 @@ restores with and without containers:
     "type": "postgres",
     "source": {"server": "db2.company.com", "database": "auth"},
     "destination": { "database": "auth"}
+  },
+  {
+    "database": "cache",
+    "type": "redis",
+    "source": {"server": "cache1.company.com", "rdb": "/path/to/dump.rdb"},
+    "destination": {"address": "localhost", "port": 6379}
   }
 ]
 ```

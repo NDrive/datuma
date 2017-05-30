@@ -6,11 +6,13 @@ import logging
 from .cmd import Server, Container, shell
 import datuma.database
 
-DATUMA_DIR="~/.datuma"
+
+DATUMA_DIR = "~/.datuma"
+
 
 def generate_archive_path(config):
     uid = "database-%s-%s" % (config["database"], int(time.time()))
-    path = DATUMA_DIR + "/"+ uid + ".tar.gz"
+    path = DATUMA_DIR + "/" + uid + ".tar.gz"
     return path
 
 
@@ -20,10 +22,7 @@ def dump(config, database, archive, server):
 
     server.ssh("mkdir -p " + DATUMA_DIR)
 
-    cmd = database.dump(
-        database=config["source"]["database"],
-        password=config["source"].get("password", False)
-    )
+    cmd = database.dump(**config["source"])
 
     if "container" in config["source"]:
         cmd = "sudo " + container.execute(cmd)
@@ -79,16 +78,10 @@ def validate_schema(config):
         raise Exception("Invalid database type %s" % config["type"])
 
     # Source
-    expected_keys = {"server", "database"}
+    expected_keys = {"server"}
     diff = expected_keys - set(config["source"].keys())
     if diff:
         raise Exception("Missing keys in source: %s" % diff)
-
-    # Destination
-    expected_keys = {"database"}
-    diff = expected_keys - set(config["destination"].keys())
-    if diff:
-        raise Exception("Missing keys in destination: %s" % diff)
 
 
 def migrate(config):
